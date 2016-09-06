@@ -1,5 +1,15 @@
 defmodule ReadParse do
+  @moduledoc """
+  Demonstrating parsing a binary string.
+  """
 
+  @doc """
+  Read a file and parse its contents.
+
+  ## Parameters
+
+  - `filename` - the filename to be read.
+  """
   def read_file(filename) do
     {:ok, file} = filename
     |> File.open([:read])
@@ -11,7 +21,7 @@ defmodule ReadParse do
     process_data(data)
   end
 
-  def process_data([header | contents]) do
+  defp process_data([header | contents]) do
     [property_1, property_2, property_3] = String.split(header, ",")
       |> Enum.map(&String.strip/1)
 
@@ -24,7 +34,4 @@ defmodule ReadParse do
         {String.to_atom(property_3), value_3} ]
     end
   end
-
 end
-
-IO.inspect ReadParse.read_file("sales_tax")
