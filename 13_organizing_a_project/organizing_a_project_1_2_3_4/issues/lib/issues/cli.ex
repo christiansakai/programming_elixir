@@ -4,7 +4,7 @@ defmodule Issues.CLI do
   @moduledoc """
   Handle the command line parsing and the dispatch to
   the various functions that end up generating a
-  table of the last _n_ issues in a gitub project
+  table of the last _n_ issues in a gitub project.
   """
   def main(argv) do
     argv
@@ -28,11 +28,8 @@ defmodule Issues.CLI do
 
     case parse do
       {[help: true], _, _}            -> :help
-
       {_, [user, project, count], _}  -> {user, project, String.to_integer(count)}
-
       {_, [user, project], _}         -> {user, project, @default_count}
-
       _                               -> :help
     end
   end
@@ -76,5 +73,4 @@ defmodule Issues.CLI do
   def print_table_for_columns(row, headers) do
     Issues.TableFormatter.print_table_for_columns(row, headers)
   end
-
 end
