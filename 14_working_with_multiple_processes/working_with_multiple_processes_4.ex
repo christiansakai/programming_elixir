@@ -32,5 +32,3 @@ defmodule Link do
     end
   end
 end
-
-Link.run

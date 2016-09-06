@@ -1,15 +1,24 @@
-# Spawns two processes and pass each other a unique token
 defmodule Token do
+  @moduledoc """
+  Demonstrate communicating between processes.
+  """
+
+  @doc """
+  Make other process receive message.
+  """
   def other_process_receive do
     receive do
       {pid, token} ->
-        send pid, {:ok, token}
+        send pid, {self, token}
     end
   end
 
+  @doc """
+  Make this current process receive message.
+  """
   def self_process_receive do
     receive do
-      {:ok, token} ->
+      {from, token} ->
         IO.puts token
         self_process_receive
     after 500 ->
@@ -17,10 +26,3 @@ defmodule Token do
     end
   end
 end
-
-pid_one = spawn(Token, :other_process_receive, [])
-send pid_one, {self, "Fred"}
-
-pid_two = spawn(Token, :other_process_receive, [])
-send pid_two, {self, "Betty"}
-

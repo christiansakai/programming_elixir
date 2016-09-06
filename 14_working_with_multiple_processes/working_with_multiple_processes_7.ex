@@ -1,18 +1,23 @@
 defmodule Parallel do
+  @moduledoc """
+  Example of how to do concurrent processing.
+  """
+
+  @doc """
+  Map a list.
+  """
   def pmap(collection, fun) do
     me = self
-    
+
     collection
-    |> Enum.map(fn elem ->
+    |> Enum.map(fn el ->
       spawn_link(fn ->
-        send me, {self, fun.(elem)}
+        send me, {self, fun.(el)}
       end)
     end)
     |> Enum.map(fn pid ->
       receive do
-        # this _pid right here will result
-        # in completely unpredictable results
-        { _pid, result } -> result 
+        { ^pid, result } -> result 
       end
     end)
   end
