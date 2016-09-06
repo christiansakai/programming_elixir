@@ -1,19 +1,30 @@
 defmodule MyList do
+  @moduledoc """
+  Module to demonstrate list operations.
+  """
+
+  @doc """
+  Flatten a nested list.
+
+  ## Parameters
+
+  - `list` - a nested list to be operated on.
+
+  ## Examples
+
+      iex> MyList.flatten([1, [2, 3, [4]]])
+      [1, 2, 3, 4]
+  """
+
   def flatten(list) do
-    _flatten(list, [])
+    _flatten(list)
   end
 
-  defp _flatten(arg, new_list) when is_list(arg) == false do
-    IO.puts "this is new list"
-    IO.inspect new_list
-    IO.inspect arg
-    IO.puts "up there is elemnet"
-    new_list ++ [arg]
+  defp _flatten([]), do: []
+  defp _flatten([h | t]) when is_list(h) do
+    _flatten(h) ++ flatten(t)
   end
-
-  defp _flatten([h | t], new_list) do
-    _flatten(t, new_list ++ [h])
+  defp _flatten([h | t]) do
+    [h | _flatten(t)]
   end
 end
-
-IO.inspect MyList.flatten([1, [2, 3, [4]]])
