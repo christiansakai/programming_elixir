@@ -41,8 +41,20 @@ defmodule Tracer do
   @doc """
   Replace the original def from the Kernel.
   This def has additional logs in it.
+  
+  The first definition is to take care of
+  guard clauses. The second definition is to take
+  care of the normal ones.
   """
+  defmacro def(outer_def={:when, _, [_inner_def={name, _, args}, _guard_clause]}, do: content) do
+    def_implementation(outer_def, name, args, content)
+  end
+
   defmacro def(definition = {name, _, args}, do: content) do
+    def_implementation(definition, name, args, content)
+  end
+
+  def def_implementation(definition, name, args, content) do
     quote do
       Kernel.def(unquote(definition)) do
         IO.puts "call: #{unquote(__MODULE__).dump_defn(unquote(name), unquote(args))}"
@@ -61,5 +73,23 @@ defmodule Tracer do
       import Kernel, except: [def: 2]
       import unquote(__MODULE__), only: [def: 2]
     end
+  end
+end
+
+defmodule Test do
+  use Tracer
+
+  # Define functions using modified `def`
+  # by Tracer
+  def puts_sum_three(a, b, c) when is_number(a) do 
+    IO.inspect(a + b + c)
+  end
+
+  def add_list(list) do
+    Enum.reduce(list, 0, &(&1 + &2))
+  end
+
+  def with_guard(a) when is_number(a) do
+    a
   end
 end
