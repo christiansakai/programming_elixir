@@ -1,6 +1,6 @@
 # Stack
 
-**TODO: Add description**
+GenServer demonstration.
 
 ## Installation
 

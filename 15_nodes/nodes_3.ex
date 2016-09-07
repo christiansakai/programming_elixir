@@ -1,6 +1,10 @@
 defmodule Ticker do
-  @interval 2000 
-  @name     :ticker
+  @moduledoc """
+  Ticker that will send tick to
+  registered clients.
+  """
+  @interval 2000
+  @name :ticker
 
   def start do
     pid = spawn(__MODULE__, :generator, [[], []])
@@ -16,36 +20,42 @@ defmodule Ticker do
       {:register, pid} ->
         IO.puts "registering #{inspect pid}"
         generator([pid | clients], remaining_clients)
+
     after @interval ->
       IO.puts "tick"
+
       do_tick(clients, remaining_clients)
     end
   end
 
+  @doc """
+  Send tick to clients successively.
+  First tick goes to the first client, 
+  second tick goes to the second client,
+  and so on.
+  """
   defp do_tick([], []) do
     generator([], [])
   end
-
-  defp do_tick([_head | _tail] = clients, []) do
+  defp do_tick(clients, []) do
     do_tick(clients, clients)
   end
-
   defp do_tick(clients, remaining_clients) do
     [client | remaining_clients] = remaining_clients
-    send client, {:tick}
+    send client, :tick
     generator(clients, remaining_clients)
   end
 end
 
 defmodule Client do
   def start do
-    pid = spawn(__MODULE__, :receiver, [])
+    pid = spawn(__MODILE__, :receiver, [])
     Ticker.register(pid)
   end
 
   def receiver do
     receive do
-      {:tick} ->
+      :tick ->
         IO.puts "tock in client"
         receiver
     end

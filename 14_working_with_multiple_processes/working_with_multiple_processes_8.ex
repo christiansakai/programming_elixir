@@ -26,6 +26,7 @@ defmodule FibSolver do
     end
   end
 
+  # Deliberately without caching
   defp fib_calc(0), do: 0
   defp fib_calc(1), do: 1
   defp fib_calc(n) do 
