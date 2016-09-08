@@ -2,6 +2,7 @@ ExUnit.start()
 
 defmodule ProtocolsTest do
   use ExUnit.Case
+  import ExUnit.CaptureIO
 
   describe "Caesar" do
     test "for charlist" do
@@ -26,5 +27,27 @@ defmodule ProtocolsTest do
         13 => ["rollercoaster", "ebyyrepbnfgre"]
       }
      end
+  end
+
+  describe "MyEnum" do
+    test "each" do
+      assert capture_io(fn ->
+        MyEnum.each([1, 2, 3], &IO.puts/1)
+      end) == """
+      1
+      2
+      3
+      """
+
+      assert MyEnum.each([1, 2, 3], &IO.puts/1) == :ok
+    end
+
+    test "filter" do
+      assert MyEnum.filter([1, 2, 3, 4, 5], &(&1 > 3)) == [4, 5]
+    end
+
+    test "map" do
+      assert MyEnum.map([1, 2, 3], &(&1 * 2)) == [2, 4, 6]
+    end
   end
 end
